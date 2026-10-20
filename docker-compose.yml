@@ -1,0 +1,51 @@
+# Full stack: docker compose up --build   ->  http://localhost:3000
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: portfolio
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d portfolio"]
+      interval: 5s
+      retries: 10
+
+  quote-server:
+    build:
+      context: .
+      dockerfile: quoteServer/Dockerfile
+    ports:
+      - "9090:9090"
+
+  portfolio-service:
+    build:
+      context: .
+      dockerfile: portfolioService/Dockerfile
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/portfolio
+      DB_USER: portfolio
+      DB_PASSWORD: portfolio
+      QUOTE_HOST: quote-server
+      QUOTE_PORT: 9090
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      quote-server:
+        condition: service_started
+
+  frontend:
+    build: ./portfolio-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - portfolio-service
+
+volumes:
+  pgdata:

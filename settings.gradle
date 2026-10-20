@@ -1,0 +1,5 @@
+rootProject.name = 'finance-portfolio'
+
+include 'quoteApi'
+include 'quoteServer'
+include 'portfolioService'

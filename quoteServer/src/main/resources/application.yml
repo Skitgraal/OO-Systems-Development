@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: quote-server
+  main:
+    web-application-type: none   # no HTTP here: this service only speaks gRPC
+  datasource:
+    url: ${QUOTE_DB_URL:jdbc:h2:mem:quotedb;DB_CLOSE_DELAY=-1}
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+
+grpc:
+  server:
+    port: ${GRPC_PORT:9090}
+
+market:
+  tick-interval-ms: 3000     # how often simulated prices move
+  max-move-percent: 0.8      # max random move per tick, in %
+
+logging:
+  level:
+    fr.efrei.finance: INFO

@@ -1,0 +1,47 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: portfolio-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/portfolio}
+    username: ${DB_USER:portfolio}
+    password: ${DB_PASSWORD:portfolio}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+quote-service:
+  host: ${QUOTE_HOST:localhost}
+  port: ${QUOTE_PORT:9090}
+  deadline-ms: 3000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    fr.efrei.finance: INFO
+
+---
+# Profile "dev": in-memory H2 database, no PostgreSQL needed.
+# Run with: ./gradlew :portfolioService:bootRun --args='--spring.profiles.active=dev'
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:portfoliodb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  h2:
+    console:
+      enabled: true

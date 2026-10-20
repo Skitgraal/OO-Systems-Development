@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package quote;
+
+option java_multiple_files = true;
+option java_package = "fr.efrei.finance.quote.grpc";
+option java_outer_classname = "QuoteServiceProto";
+
+// Market data service: exposes instruments and their (simulated) live prices.
+service QuoteService {
+  // Returns the list of tradable instruments.
+  rpc ListInstruments (Empty) returns (InstrumentList);
+
+  // Returns the current quote of one instrument. NOT_FOUND if the symbol is unknown.
+  rpc GetQuote (QuoteRequest) returns (Quote);
+
+  // Returns the current quotes of several instruments (unknown symbols are skipped).
+  rpc GetQuotes (QuotesRequest) returns (QuoteList);
+}
+
+message Empty {}
+
+message Instrument {
+  string symbol = 1;
+  string name = 2;
+  string sector = 3;
+  string currency = 4;
+}
+
+message InstrumentList {
+  repeated Instrument instruments = 1;
+}
+
+message QuoteRequest {
+  string symbol = 1;
+}
+
+message QuotesRequest {
+  repeated string symbols = 1;
+}
+
+message Quote {
+  string symbol = 1;
+  string name = 2;
+  string currency = 3;
+  double price = 4;
+  double previous_close = 5;
+  double change_percent = 6;
+  int64 timestamp = 7; // epoch millis
+}
+
+message QuoteList {
+  repeated Quote quotes = 1;
+}

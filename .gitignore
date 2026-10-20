@@ -1,0 +1,16 @@
+# Gradle / Java
+.gradle/
+build/
+**/src/generated/
+*.class
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Node
+node_modules/
+dist/
